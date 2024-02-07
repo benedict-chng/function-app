@@ -30,7 +30,6 @@ public class Function {
         HttpRequestMessage<Optional<String>> request,
         final ExecutionContext context) {
         context.getLogger().info("Java HTTP trigger processed a request.");
-        context.getLogger().info("Java HTTP trigger processed a request1.");
 
         // Parse query parameter
         final String query = request.getQueryParameters().get("name");
