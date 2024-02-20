@@ -12,7 +12,7 @@ public class ReceiveFromMessageBus {
      */
     @FunctionName("ReceiveFromMessageBus")
     public void serviceBusProcess(
-        @ServiceBusQueueTrigger(name = "message", queueName = "queue1", connection = "AzureWebJobsStorage") String message,
+        @ServiceBusQueueTrigger(name = "message", queueName = "queue1", connection = "ServiceBusConnection") String message,
         final ExecutionContext context
     ) {
         context.getLogger().info(message);

@@ -21,7 +21,7 @@ public class SendToMessageBus {
     @FunctionName("SendToMessageBus")
     public HttpResponseMessage pushToQueue(
         @HttpTrigger(name = "request", methods = {HttpMethod.GET}, authLevel = AuthorizationLevel.ANONYMOUS) HttpRequestMessage<Optional<String>> request,
-        @ServiceBusQueueOutput(name = "message", queueName = "queue1", connection = "AzureWebJobsStorage") final OutputBinding<String> message,
+        @ServiceBusQueueOutput(name = "message", queueName = "queue1", connection = "ServiceBusConnection") final OutputBinding<String> message,
         final ExecutionContext context
     ) {
         context.getLogger().info("Java HTTP trigger processed a request.");
