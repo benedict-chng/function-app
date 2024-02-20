@@ -9,6 +9,7 @@ import com.microsoft.azure.functions.HttpResponseMessage;
 import com.microsoft.azure.functions.HttpStatus;
 import com.microsoft.azure.functions.OutputBinding;
 import com.microsoft.azure.functions.annotation.AuthorizationLevel;
+import com.microsoft.azure.functions.annotation.BindingName;
 import com.microsoft.azure.functions.annotation.FunctionName;
 import com.microsoft.azure.functions.annotation.HttpTrigger;
 import com.microsoft.azure.functions.annotation.ServiceBusQueueOutput;
@@ -21,13 +22,13 @@ public class SendToMessageBus {
     @FunctionName("SendToMessageBus")
     public HttpResponseMessage pushToQueue(
         @HttpTrigger(name = "request", methods = {HttpMethod.GET}, authLevel = AuthorizationLevel.ANONYMOUS) HttpRequestMessage<Optional<String>> request,
+        @BindingName("message") String queryValue,
         @ServiceBusQueueOutput(name = "message", queueName = "queue1", connection = "ServiceBusConnection") final OutputBinding<String> message,
         final ExecutionContext context
     ) {
         context.getLogger().info("Java HTTP trigger processed a request.");
 
-        final String query = request.getQueryParameters().get("message");
-        final String content = request.getBody().orElse(query);
+        final String content = queryValue;
 
         if (content == null) {
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Please pass a message on the query string or in the request body").build();
