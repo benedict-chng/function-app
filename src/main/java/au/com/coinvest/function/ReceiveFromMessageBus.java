@@ -1,7 +1,8 @@
 package au.com.coinvest.function;
 
-import com.microsoft.azure.functions.annotation.*;
-import com.microsoft.azure.functions.*;
+import com.microsoft.azure.functions.ExecutionContext;
+import com.microsoft.azure.functions.annotation.FunctionName;
+import com.microsoft.azure.functions.annotation.ServiceBusQueueTrigger;
 
 /**
  * Azure Functions with Azure Storage Queue trigger.
