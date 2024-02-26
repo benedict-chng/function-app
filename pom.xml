@@ -14,6 +14,7 @@
         <java.version>17</java.version>
         <azure.functions.maven.plugin.version>1.31.0</azure.functions.maven.plugin.version>
         <azure.functions.java.library.version>3.1.0</azure.functions.java.library.version>
+        <swagger-maven-plugin-version>3.1.8</swagger-maven-plugin-version>
         <functionAppName>coinvest-function-apps-helloworld</functionAppName>
     </properties>
 
@@ -29,10 +30,29 @@
             <version>${azure.functions.java.library.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>2.1.6</version>
+          <groupId>org.glassfish.jersey.media</groupId>
+          <artifactId>jersey-media-moxy</artifactId>
+          <version>2.25</version> <!-- Use the latest version available -->
         </dependency>
+        <!-- https://mvnrepository.com/artifact/io.swagger/swagger-annotations -->
+        <dependency>
+          <groupId>io.swagger</groupId>
+          <artifactId>swagger-annotations</artifactId>
+          <version>1.6.13</version>
+        </dependency>
+
+        <!-- Dependencies required for swagger.json -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>2.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.2</version>
+        </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -114,6 +134,78 @@
                     </filesets>
                 </configuration>
             </plugin>
+
+            <!--
+            <plugin>
+              <groupId>io.swagger.core.v3</groupId>
+              <artifactId>swagger-maven-plugin</artifactId>
+              <version>2.1.10</version>
+              <executions>
+                <execution>
+                  <phase>compile</phase>
+                  <goals>
+                    <goal>resolve</goal>
+                  </goals>
+                  <configuration>
+                    <outputFileName>swagger.json</outputFileName>
+                    <outputFormat>JSON</outputFormat>
+                    <outputPath>${project.build.directory}</outputPath>
+                    <resourcePackages>
+                      <resourcePackage>au.com.coinvest.function</resourcePackage>
+                    </resourcePackages>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+            -->
+
+            <plugin>
+                <groupId>com.github.kongchen</groupId>
+                <artifactId>swagger-maven-plugin</artifactId>
+                <version>${swagger-maven-plugin-version}</version>
+                <configuration>
+                    <apiSources>
+                        <apiSource>
+                          <info>
+                            <title>Elevate Sample API</title>
+                            <version>v0.1</version>
+                            <!-- use markdown here because I'm using markdown for output,
+                            if you need to use html or other markup language, you need to use your target language,
+                            and note escape your description for xml -->
+                            <description>
+                              This is a sample.
+                            </description>
+                            <termsOfService>
+                              http://www.github.com/kongchen/swagger-maven-plugin
+                            </termsOfService>
+                            <contact>
+                              <email>benedict.chng@coinvest.com.au</email>
+                              <name>Benedict Chng</name>
+                              <url>https://leaveplus.com.au</url>
+                            </contact>
+                            <license>
+                              <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+                              <name>Apache 2.0</name>
+                            </license>
+                          </info>
+                          <locations>
+                            <location>au.com.coinvest.function</location>
+                          </locations>
+                          <swaggerDirectory>${project.build.directory}</swaggerDirectory>
+                          <outputFormats>json</outputFormats>
+                        </apiSource>
+                    </apiSources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 </project>
