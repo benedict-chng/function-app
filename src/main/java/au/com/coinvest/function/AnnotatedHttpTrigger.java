@@ -16,6 +16,8 @@ import com.microsoft.azure.functions.annotation.HttpTrigger;
 
 import au.com.coinvest.domain.Customer;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -26,22 +28,28 @@ import io.swagger.annotations.ApiResponses;
 @Api(value="AdjustmentResource for Adjustment")
 public class AnnotatedHttpTrigger {
 
+    @Path("/ProcessCustomer")
     @FunctionName("ProcessCustomer")
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Customer processed successfully", response = Customer.class),
+        @ApiResponse(code = 200, message = "Customer processed successfully"),
         @ApiResponse(code = 400, message = "Bad request"),
-        @ApiResponse(code = 500, message = "Internal server error")
+        @ApiResponse(code = 500, message = "Internal server error1")
     })
+    @ApiOperation(value = "Process customer information", httpMethod = "POST")
     public HttpResponseMessage processCustomer(
         @HttpTrigger(name = "req", methods = {HttpMethod.POST}, authLevel = AuthorizationLevel.ANONYMOUS)
         HttpRequestMessage<Optional<Customer>> request,
-        @BindingName("param1")
+        @ApiParam(name = "param1") @BindingName("param1")
         String param1,
-        @BindingName("param2")
+        @ApiParam(name = "param2") @BindingName("param2")
         int param2,
         ExecutionContext context
     ) {
         context.getLogger().info("Java HTTP trigger processed a request.");
+
+        context.getLogger().info(
+            String.format("param1: %s param2: %s", param1, param2)
+        );
 
         // Check if request body exists
         if (!request.getBody().isPresent()) {
