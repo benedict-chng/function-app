@@ -30,9 +30,9 @@ public class QueryCodeSet {
         )
         HttpRequestMessage<Optional<String>> request,
         @CosmosDBInput(
-            name = "ToDoList",
-            databaseName = "ToDoList", 
-            containerName = "Items",
+            name = "CodeSet",
+            databaseName = "CodeSet", 
+            containerName = "codeset",
             id = "{Query.id}",
             partitionKey = "{Query.partitionKeyValue}",
             connection = "CosmosDBConnectionString"
@@ -45,7 +45,7 @@ public class QueryCodeSet {
 
        // Convert and display
         if (!item.isPresent()) {
-            return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
+            return request.createResponseBuilder(HttpStatus.NOT_FOUND)
                           .body("Document not found.")
                           .build();
         } else {
