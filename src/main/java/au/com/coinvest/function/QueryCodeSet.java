@@ -12,6 +12,8 @@ import com.microsoft.azure.functions.annotation.CosmosDBInput;
 import com.microsoft.azure.functions.annotation.FunctionName;
 import com.microsoft.azure.functions.annotation.HttpTrigger;
 
+import au.com.coinvest.domain.CodeSet;
+
 /**
  * Azure Functions with HTTP Trigger.
  */
@@ -21,7 +23,7 @@ public class QueryCodeSet {
      * 1. curl -d "HTTP Body" {your host}/api/QueryCodeSet
      * 2. curl {your host}/api/QueryCodeSet?name=HTTP%20Query
      */
-    @FunctionName("QueryCodeSet")
+    @FunctionName("QueryCodeSetByIdPartitionKeyValue")
     public HttpResponseMessage run(
         @HttpTrigger(
             name = "req",
@@ -31,29 +33,29 @@ public class QueryCodeSet {
         HttpRequestMessage<Optional<String>> request,
         @CosmosDBInput(
             name = "CodeSet",
-            databaseName = "CodeSet", 
+            databaseName = "Config", 
             containerName = "codeset",
             id = "{Query.id}",
             partitionKey = "{Query.partitionKeyValue}",
             connection = "CosmosDBConnectionString"
         )
-        Optional<String> item,
+        Optional<CodeSet> codeset,
         final ExecutionContext context
     ) {
         context.getLogger().info("Parameters are: " + request.getQueryParameters());
-        context.getLogger().info("String from the database is " + (item.isPresent() ? item.get() : null));
 
-       // Convert and display
-        if (!item.isPresent()) {
+        // Convert and display
+        if (!codeset.isPresent()) {
             return request.createResponseBuilder(HttpStatus.NOT_FOUND)
                           .body("Document not found.")
                           .build();
         } else {
-            // return JSON from Cosmos. Alternatively, we can parse the JSON string
-            // and return an enriched JSON object.
+            context.getLogger().info("Found item " + codeset.get().getCodeSetName());
+            context.getLogger().info("String from the database is " + codeset.get());
+
             return request.createResponseBuilder(HttpStatus.OK)
                         .header("Content-Type", "application/json")
-                        .body(item.get())
+                        .body(codeset.get())
                         .build();
         }
     }
